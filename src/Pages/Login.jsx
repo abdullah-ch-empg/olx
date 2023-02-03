@@ -1,15 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "../axiosConfig";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 const cookies = new Cookies();
 
+const isUserSignedIn = () => {
+  let uid = cookies.get("uid");
+  let accessToken = cookies.get("access-token");
+  let client = cookies.get("client");
+
+  return uid && accessToken && client ? true : false;
+};
+
 const Login = () => {
+  const isSignedIn = isUserSignedIn();
+
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     email: null,
     password: null,
   });
+
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const login = async () => {
     try {
