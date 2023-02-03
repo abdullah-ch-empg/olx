@@ -44,7 +44,7 @@ const Login = () => {
       cookies.set("uid", response.headers["uid"], { path: "/" });
 
       // redirect to home
-      window.location.href = "/";
+
       navigate("/");
     } catch (error) {
       console.log("error ==> ", error);
