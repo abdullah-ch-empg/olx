@@ -11,7 +11,6 @@ export const designationSlice = createSlice({
       state.value = action.payload;
     },
     deleteDesignation: (state, action) => {
-      console.log("action ===> ", action);
       const index = state.value.findIndex(
         (designation) => designation.id === action.payload
       );
@@ -31,14 +30,7 @@ export const designationSlice = createSlice({
 export const { setDesignations, deleteDesignation } = designationSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched
-// export const incrementAsync = (amount) => (dispatch) => {
-//   setTimeout(() => {
-//     dispatch(incrementByAmount(amount));
-//   }, 1000);
-// };
+// can be dispatched like a regular action: `dispatch
 
 export const getDesignationsUser = () => {
   return async (dispatch) => {
