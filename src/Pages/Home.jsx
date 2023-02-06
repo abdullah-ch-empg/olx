@@ -3,6 +3,7 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { signOutUser } from "../API/user";
 import { Designation } from "../Features/Designation/Designation";
+import { Client } from "../Features/Client/Client";
 
 const cookies = new Cookies();
 
@@ -27,6 +28,7 @@ const Home = () => {
     <div>
       <h1>Home Page</h1>
       <button onClick={signOut}>Sign-out</button>
+      <Client />
       <Designation />
     </div>
   );
