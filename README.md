@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Redux Folder Structure
+
+Using This Redux Folder Structure [Redux Tool Kit](https://javascript.plainenglish.io/redux-toolkit-the-standard-way-to-write-redux-dcfb372202b8#:~:text=The%20feature%20Folder%20approach%20is,file%2C%20not%20in%20multiple%20files.)
+
 ## Available Scripts
 
 In the project directory, you can run:
