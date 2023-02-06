@@ -10,6 +10,9 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
+  if (config.url === "auth/sign_in") {
+    return config;
+  }
   config.headers["uid"] = cookies.get("uid");
   config.headers["access-token"] = cookies.get("access-token");
   config.headers["client"] = cookies.get("client");
