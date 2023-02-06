@@ -1,16 +1,20 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { selectClients } from "../Features/Client/clientSlice";
+import {
+  selectClients,
+  selectClientsLoading,
+} from "../Features/Client/clientSlice";
 import { selectDesignation } from "../Features/Designation/designationSlice";
 
 export const Public = () => {
   const designations = useSelector(selectDesignation);
   const clients = useSelector(selectClients);
+  const isLoadingClients = useSelector(selectClientsLoading);
 
   return (
     <div>
       I am a Public Page, anybody can access me :-)
-      {clients ? (
+      {isLoadingClients ? (
         <ul>
           {clients?.product_categories.map((designation) => (
             <span key={designation.id}>

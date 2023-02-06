@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getClients, selectClients } from "./clientSlice";
+import { getClients, selectClients, selectClientsLoading } from "./clientSlice";
 
 export const Client = () => {
   const clients = useSelector(selectClients);
+  const isLoading = useSelector(selectClientsLoading);
+
   const dispatch = useDispatch();
   const apiCallRef = useRef(false);
 
@@ -21,7 +23,7 @@ export const Client = () => {
   return (
     <>
       <h1>Client</h1>
-      {clients ? (
+      {isLoading ? (
         <ul>
           {clients?.product_categories.map((designation) => (
             <span key={designation.id}>
