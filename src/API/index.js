@@ -2,14 +2,12 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
-// Next we make an 'instance' of it
 const instance = axios.create({
-  // .. where we make our configurations
   baseURL: process.env.REACT_APP_API,
-  // withCredentials: true,
 });
 
 instance.interceptors.request.use((config) => {
+  // don't need to send cookies for sign_in API
   if (config.url === "auth/sign_in") {
     return config;
   }
