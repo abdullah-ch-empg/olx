@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "../axiosConfig";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
+import { signInUser } from "../API/user";
 const cookies = new Cookies();
 
 const isUserSignedIn = () => {
@@ -30,10 +30,10 @@ const Login = () => {
 
   const login = async () => {
     try {
-      const response = await axios.post(`auth/sign_in`, {
-        email: credentials.email,
-        password: credentials.password,
-      });
+      const response = await signInUser(
+        credentials.email,
+        credentials.password
+      );
       console.log("response ===> sigin ==> ", response.headers);
 
       // set cookies
@@ -44,7 +44,6 @@ const Login = () => {
       cookies.set("uid", response.headers["uid"], { path: "/" });
 
       // redirect to home
-
       navigate("/");
     } catch (error) {
       console.log("error ==> ", error);
@@ -64,7 +63,6 @@ const Login = () => {
       });
     }
     console.log("credentials are ====> ", credentials);
-    // console.log("env ===> ", process.env.REACT_APP_API);
   };
 
   const handleLogin = () => {

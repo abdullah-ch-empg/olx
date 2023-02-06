@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "../axiosConfig";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
+import { getUser, signOutUser } from "../API/user";
 
 const cookies = new Cookies();
 
@@ -14,7 +14,7 @@ const Home = () => {
     const getCurrentUser = async () => {
       try {
         apiCallRef.current = true;
-        const response = await axios.get("users/current");
+        const response = await getUser();
         setUserInfo(response.data);
       } catch (error) {
         console.log("error ===> ", error);
@@ -29,7 +29,7 @@ const Home = () => {
 
   const signOut = async () => {
     try {
-      const response = await axios.delete("auth/sign_out");
+      const response = await signOutUser();
       console.log(response.data);
       // clear all cookies
       cookies.remove("uid");
