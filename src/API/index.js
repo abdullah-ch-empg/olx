@@ -1,5 +1,7 @@
 import axios from "axios";
 import Cookies from "universal-cookie";
+import { persistor } from "../App/store";
+import { removeCookies } from "../utils";
 const cookies = new Cookies();
 
 const instance = axios.create({
@@ -18,5 +20,25 @@ instance.interceptors.request.use((config) => {
   return config;
 });
 
+instance.interceptors.response.use(
+  function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response;
+  },
+  function (error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    console.log("error code ========> ", error.response.status);
+    if (error.response.status === 401) {
+      //   purge any persisted state
+      persistor.purge().then(() => {
+        removeCookies();
+        window.location.href = "/signin";
+      });
+    }
+    return Promise.reject(error);
+  }
+);
 // logout on 401
 export default instance;

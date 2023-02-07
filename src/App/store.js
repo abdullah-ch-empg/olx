@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import clientSlice from "../Features/Client/clientSlice";
+// import clientSlice from "../Features/Client/clientSlice";
+import userSlice from "../Features/User/userSlice";
 import storage from "redux-persist/lib/storage";
 import {
   persistReducer,
@@ -11,7 +12,7 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import designationSlice from "../Features/Designation/designationSlice";
+// import designationSlice from "../Features/Designation/designationSlice";
 // import thunk from "redux-thunk";
 
 const persistConfig = {
@@ -19,14 +20,13 @@ const persistConfig = {
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, designationSlice);
+const persistedUserReducer = persistReducer(persistConfig, userSlice);
 
 export const store = configureStore({
   reducer: {
     // designation: designationSlice,
-    clients: clientSlice,
-    designation: persistedReducer,
-    // middleware: [thunk],
+    // clients: clientSlice,
+    user: persistedUserReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -35,5 +35,8 @@ export const store = configureStore({
       },
     }),
 });
+// purge
+// current API call
+// log out on 401 (purge)
 
 export const persistor = persistStore(store);

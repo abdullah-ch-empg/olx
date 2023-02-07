@@ -1,24 +1,21 @@
 import React from "react";
-import Cookies from "universal-cookie";
-import { useNavigate } from "react-router-dom";
-import { signOutUser } from "../API/user";
-import { Designation } from "../Features/Designation/Designation";
-import { Client } from "../Features/Client/Client";
+// import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { persistor } from "../App/store";
 
-const cookies = new Cookies();
+import User from "../Features/User/User";
+import { logOutUser } from "../Features/User/userSlice";
+// import { Designation } from "../Features/Designation/Designation";
+// import { Client } from "../Features/Client/Client";
 
 const Home = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const signOut = async () => {
     try {
-      const response = await signOutUser();
-      console.log(response.data);
-      // clear all cookies
-      cookies.remove("uid");
-      cookies.remove("access-token");
-      cookies.remove("client");
-      navigate("/signin");
+      dispatch(logOutUser());
+      await persistor.purge();
     } catch (error) {
       console.log("error ===> ", error);
       alert(error?.response?.data?.errors[0]);
@@ -28,8 +25,9 @@ const Home = () => {
     <div>
       <h1>Home Page</h1>
       <button onClick={signOut}>Sign-out</button>
-      <Client />
-      <Designation />
+      <User />
+      {/* <Client /> */}
+      {/* <Designation /> */}
     </div>
   );
 };
