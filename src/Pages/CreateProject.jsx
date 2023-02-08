@@ -123,16 +123,20 @@ const CreateProject = () => {
         {({ isSubmitting, values, errors, touched }) => (
           <Form>
             <FormObserver handleProvinceCity={handleProvinceCity} />
+            {/* Name */}
             <Field type="input" name="name" placeholder="Name" />
             {errors.name && touched.name ? <div>{errors.name}</div> : null}
 
+            {/* Short Name */}
             <Field type="input" name="shortName" placeholder="Short Name" />
             {errors.shortName && touched.shortName ? (
               <div>{errors.shortName}</div>
             ) : null}
+            {/* Email */}
             <Field type="email" name="email" placeholder="Email" />
             {errors.email && touched.email ? <div>{errors.email}</div> : null}
 
+            {/* Phone Number */}
             <Field type="input" name="phoneNumber" placeholder="Phone Number" />
             {errors.phoneNumber && touched.phoneNumber ? (
               <div>{errors.phoneNumber}</div>
@@ -204,21 +208,25 @@ const CreateProject = () => {
             ) : null}
             <Field type="input" name="externalId" placeholder="External ID" />
 
+            {/* Overdue Charges */}
             <Field
               type="input"
               name="overdueCharges"
               placeholder="Overdue Charges"
             />
+            {/* Grace Period */}
             <Field type="input" name="gracePeriod" placeholder="Grace Period" />
 
+            {/*  Transfer Fee */}
             <Field type="input" name="transferFee" placeholder="Transfer Fee" />
 
+            {/* Cancellation Fee */}
             <Field
               type="input"
               name="cancellationFee"
               placeholder="Cancellation Fee"
             />
-
+            {/* Income Tax Rate Filter */}
             <Field
               type="input"
               name="incomeTaxRateFiler"
@@ -227,6 +235,7 @@ const CreateProject = () => {
             {errors.incomeTaxRateFiler && touched.incomeTaxRateFiler ? (
               <div>{errors.incomeTaxRateFiler}</div>
             ) : null}
+            {/*Income Tax Rate Non Filter  */}
             <Field
               type="input"
               name="incomeTaxRateNonFiler"
