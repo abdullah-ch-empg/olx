@@ -14,3 +14,5 @@ export const createProject = (projectData) =>
   });
 
 export const fetchProjects = () => axios.get("api/polaris/projects");
+export const fetchProjectById = (projectId) =>
+  axios.get(`api/polaris/projects/${projectId}`);

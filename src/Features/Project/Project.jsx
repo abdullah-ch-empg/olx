@@ -86,7 +86,7 @@ const Project = () => {
 
   const handleViewDetails = (row) => {
     // console.log("row ===> handleViewDetails ===> ", row);
-    navigate(`/dashboard/${row.id}`);
+    navigate(`/dashboard/view-details/${row.id}`);
   };
 
   return (
