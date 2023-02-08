@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
-import { useDispatch } from "react-redux";
-import { fetchCities, fetchNewProject, fetchProvinces } from "../API/project";
-import { createNewProject } from "../Features/Project/projectSlice";
+// import { useDispatch } from "react-redux";
+import {
+  createProject,
+  fetchCities,
+  fetchNewProject,
+  fetchProvinces,
+} from "../API/project";
+// import { createNewProject } from "../Features/Project/projectSlice";
 import { useNavigate } from "react-router-dom";
 
 const FormObserver = ({ handleProvinceCity }) => {
@@ -63,7 +68,7 @@ const CreateProject = () => {
     provinces: null,
   });
   const apiCallRef = useRef(false);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleProvinceCity = (data, key) => {
@@ -118,7 +123,8 @@ const CreateProject = () => {
         }}
         onSubmit={async (values, { setSubmitting }) => {
           console.log("FORM VALUES ===> ", values);
-          const submissionSuccess = await dispatch(createNewProject(values));
+          const submissionSuccess = await createProject(values);
+          // const submissionSuccess = await dispatch(createNewProject(values));
           console.log("SUBMISSION SUCCESSFUL ===> ", submissionSuccess);
 
           if (submissionSuccess) {
