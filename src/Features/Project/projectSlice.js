@@ -4,11 +4,11 @@ import { createProject } from "../../API/project";
 export const projectSlice = createSlice({
   name: "project",
   initialState: {
-    value: null,
+    value: [],
   },
   reducers: {
     setProjects: (state, action) => {
-      state.value = action.payload;
+      state.value.push(action.payload);
     },
   },
 });

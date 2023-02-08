@@ -19,18 +19,39 @@ const FormObserver = ({ handleProvinceCity }) => {
 
   const handleCountryChange = async (countryId) => {
     console.log("country ====> ", countryId);
-    try {
-      const {
-        data: { states },
-      } = await fetchProvinces(countryId);
-      const {
-        data: { cities },
-      } = await fetchCities(countryId);
+    const provincesAPI = async () => await fetchProvinces(countryId);
+    const citiesAPI = async () => await fetchCities(countryId);
 
-      handleProvinceCity(states, cities);
-    } catch (error) {
-      console.log("error ====> ", error);
+    const responses = await Promise.allSettled([provincesAPI(), citiesAPI()]);
+
+    for (const response of responses) {
+      if (response.status === "fulfilled") {
+        console.log("response ===> ", response.value.data);
+        if ("cities" in response.value.data) {
+          console.log("I have cities");
+          handleProvinceCity(response.value.data.cities, "cities");
+        } else if ("states" in response.value.data) {
+          console.log("I have states");
+          handleProvinceCity(response.value.data.states, "provinces");
+        }
+      } else {
+        // handle error here
+        console.log("response ===> ", response.value.data);
+      }
     }
+
+    // try {
+    //   const {
+    //     data: { states },
+    //   } = await fetchProvinces(countryId);
+    //   const {
+    //     data: { cities },
+    //   } = await fetchCities(countryId);
+
+    //   handleProvinceCity(states, cities);
+    // } catch (error) {
+    //   console.log("error ====> ", error);
+    // }
   };
   return null;
 };
@@ -45,12 +66,12 @@ const CreateProject = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleProvinceCity = (provinces, cities) => {
-    console.log("getting ===> handleProvinceCity", provinces, cities);
-    setProvinceCity({
-      cities,
-      provinces,
-    });
+  const handleProvinceCity = (data, key) => {
+    console.log("getting ===> handleProvinceCity", data, key);
+    setProvinceCity((prevState) => ({
+      ...prevState,
+      [`${key}`]: data,
+    }));
   };
 
   useEffect(() => {
