@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
-// import { useDispatch, useSelector } from "react-redux";
-import {
-  createProject,
-  fetchCities,
-  fetchNewProject,
-  fetchProvinces,
-} from "../API/project";
+import { useDispatch } from "react-redux";
+import { fetchCities, fetchNewProject, fetchProvinces } from "../API/project";
+import { createNewProject } from "../Features/Project/projectSlice";
+import { useNavigate } from "react-router-dom";
 
 const FormObserver = ({ handleProvinceCity }) => {
   const { values } = useFormikContext();
@@ -45,6 +42,8 @@ const CreateProject = () => {
     provinces: null,
   });
   const apiCallRef = useRef(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleProvinceCity = (provinces, cities) => {
     console.log("getting ===> handleProvinceCity", provinces, cities);
@@ -96,20 +95,15 @@ const CreateProject = () => {
           }
           return errors;
         }}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
           console.log("FORM VALUES ===> ", values);
+          const submissionSuccess = await dispatch(createNewProject(values));
+          console.log("SUBMISSION SUCCESSFUL ===> ", submissionSuccess);
 
-          createProject(values)
-            .then((response) => {
-              console.log("createProject ===> ", response.data);
-              setSubmitting(false);
-            })
-            .catch((err) => {
-              console.log("err ==> createProject ==> ", err);
-              setSubmitting(false);
-
-              alert(err.response.data.errors);
-            });
+          if (submissionSuccess) {
+            setSubmitting(false);
+            navigate("/dashboard");
+          }
         }}
       >
         {({ isSubmitting, values }) => (
