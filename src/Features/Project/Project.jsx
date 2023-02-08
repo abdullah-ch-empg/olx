@@ -1,22 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchProjects } from "../../API/project";
-// import { useDispatch } from "react-redux";
-import { getAllProjects } from "./projectSlice";
+import DataTable from "react-data-table-component";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProjects, selectProjects } from "./projectSlice";
+
+/**
+ * Project Columns:
+Project --- maybe name key
+Status --- maybe state key
+City --- done
+Total Units --- done
+Units Booked --- done
+Units Available --- done
+Total Amount --- done
+View Detail (CTA)
+
+ */
 
 const Project = () => {
+  const listing = useSelector(selectProjects);
   const navigate = useNavigate();
   const apiCallRef = useRef(false);
-  const [listing, setListing] = useState(null);
-  //   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const getProjects = async () => {
       apiCallRef.current = true;
-      const response = await fetchProjects();
-      console.log("response ===> getProjects ==> ", response.data);
-      setListing(response.data);
-      //   dispatch(getAllProjects());
+      dispatch(getAllProjects());
     };
     if (!apiCallRef.current) {
       getProjects();
@@ -24,20 +34,74 @@ const Project = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const columns = useMemo(
+    () => [
+      {
+        name: "Project",
+        selector: (row) => row.name,
+      },
+      {
+        name: "status",
+        selector: (row) => row.state,
+      },
+      {
+        name: "City",
+        selector: (row) => row.city?.name,
+      },
+      {
+        name: "Total Units",
+        selector: (row) => row.total_units,
+      },
+      {
+        name: "Units Booked",
+        selector: (row) => row.units_booked,
+      },
+      {
+        name: "Units Available",
+        selector: (row) => row.units_available,
+      },
+      {
+        name: "Total Amount",
+        selector: (row) => row.total_amount,
+      },
+      {
+        name: "Actions",
+        button: true,
+        cell: (row) => (
+          <button
+            // className="btn btn-outline btn-xs"
+            onClick={() => handleViewDetails(row)}
+          >
+            View Details
+          </button>
+        ),
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
   const handleClick = () => {
     navigate("/dashboard/new");
+  };
+
+  const handleViewDetails = (row) => {
+    // console.log("row ===> handleViewDetails ===> ", row);
+    navigate(`/dashboard/${row.id}`);
   };
 
   return (
     <div>
       {/* Project */}
-      <button onClick={handleClick}>CTA</button>
       <h1>
-        There willl be a listing here........
-        {listing?.projects ? (
-          <h1> Length of Projects === {listing?.projects.length}</h1>
-        ) : null}
+        <button onClick={handleClick}>CTA</button>
       </h1>
+      {listing?.projects ? (
+        <>
+          <DataTable columns={columns} data={listing.projects} />
+        </>
+      ) : (
+        "Loading Listing........"
+      )}
     </div>
   );
 };

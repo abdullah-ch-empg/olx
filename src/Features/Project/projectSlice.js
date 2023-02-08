@@ -34,10 +34,12 @@ export const getAllProjects = () => async (dispatch) => {
   try {
     const response = await fetchProjects();
     console.log("response ====> getAllProjects ==> ", response.data.projects);
-    dispatch(setProjects(response.data.projects));
+    dispatch(setProjects(response.data));
   } catch (error) {
     console.log("error ===> getAllProjects ===> ", error);
   }
 };
+
+export const selectProjects = (state) => state.project.value;
 
 export default projectSlice.reducer;
