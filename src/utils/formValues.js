@@ -1,0 +1,17 @@
+export const createNewProjectInitialValues = {
+  name: "",
+  shortName: "",
+  email: "",
+  phoneNumber: "",
+  countryId: "",
+  provinceId: "",
+  cityId: "",
+  address: "",
+  externalId: "",
+  overdueCharges: "",
+  gracePeriod: "",
+  transferFee: "",
+  cancellationFee: "",
+  incomeTaxRateFiler: "",
+  incomeTaxRateNonFiler: "",
+};

@@ -1,26 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
-// import { useDispatch } from "react-redux";
+import { Formik, Form, Field, useFormikContext } from "formik";
+
 import {
   createProject,
   fetchCities,
   fetchNewProject,
   fetchProvinces,
 } from "../API/project";
-// import { createNewProject } from "../Features/Project/projectSlice";
 import { useNavigate } from "react-router-dom";
+import { createNewProjectSchema } from "../utils/validation";
+import { createNewProjectInitialValues } from "../utils/formValues";
 
 const FormObserver = ({ handleProvinceCity }) => {
   const { values } = useFormikContext();
 
   useEffect(() => {
     // if country is changed,
-    if (values.country_id !== "") {
+    if (values.countryId !== "") {
       console.log(values);
-      handleCountryChange(values.country_id);
+      handleCountryChange(values.countryId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.country_id]);
+  }, [values.countryId]);
 
   const handleCountryChange = async (countryId) => {
     console.log("country ====> ", countryId);
@@ -44,19 +45,6 @@ const FormObserver = ({ handleProvinceCity }) => {
         console.log("response ===> ", response.value.data);
       }
     }
-
-    // try {
-    //   const {
-    //     data: { states },
-    //   } = await fetchProvinces(countryId);
-    //   const {
-    //     data: { cities },
-    //   } = await fetchCities(countryId);
-
-    //   handleProvinceCity(states, cities);
-    // } catch (error) {
-    //   console.log("error ====> ", error);
-    // }
   };
   return null;
 };
@@ -79,6 +67,38 @@ const CreateProject = () => {
     }));
   };
 
+  const handleSubmit = async (values, setSubmitting) => {
+    try {
+      const projectData = {
+        name: values.name,
+        short_name: values.shortName,
+        email: values.email,
+        phone_number: values.phoneNumber,
+        country_id: values.countryId,
+        province_id: values.provinceId,
+        city_id: values.cityId,
+        address: values.address,
+        external_id: values.externalId,
+        overdue_charges: values.overdueCharges,
+        grace_period: values.gracePeriod,
+        transfer_fee: values.transferFee,
+        cancellation_fee: values.cancellationFee,
+        income_tax_rate_filer: values.incomeTaxRateFiler,
+        income_tax_rate_non_filer: values.incomeTaxRateNonFiler,
+      };
+      const submissionSuccess = await createProject(projectData);
+      // const submissionSuccess = await dispatch(createNewProject(values));
+      console.log("SUBMISSION SUCCESSFUL ===> ", submissionSuccess);
+
+      setSubmitting(false);
+      navigate("/dashboard");
+    } catch (error) {
+      console.log("error ===> ", error);
+      alert(error?.response?.data?.errors[0]);
+      setSubmitting(false);
+    }
+  };
+
   useEffect(() => {
     const getNewProject = async () => {
       apiCallRef.current = true;
@@ -94,59 +114,31 @@ const CreateProject = () => {
     <div>
       CreateProject
       <Formik
-        initialValues={{
-          name: "",
-          short_name: "",
-          email: "",
-          phone_number: "",
-          country_id: "",
-          province_id: "",
-          city_id: "",
-          address: "",
-          external_id: "",
-          // not using below fields in the form
-          overdue_charges: "",
-          grace_period: "",
-          transfer_fee: "",
-          cancellation_fee: "",
-        }}
-        validate={(values) => {
-          const errors = {};
-          if (!values.email) {
-            errors.email = "Required";
-          } else if (
-            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-          ) {
-            errors.email = "Invalid email address";
-          }
-          return errors;
-        }}
-        onSubmit={async (values, { setSubmitting }) => {
-          console.log("FORM VALUES ===> ", values);
-          const submissionSuccess = await createProject(values);
-          // const submissionSuccess = await dispatch(createNewProject(values));
-          console.log("SUBMISSION SUCCESSFUL ===> ", submissionSuccess);
-
-          if (submissionSuccess) {
-            setSubmitting(false);
-            navigate("/dashboard");
-          }
+        validationSchema={createNewProjectSchema}
+        initialValues={createNewProjectInitialValues}
+        onSubmit={(values, { setSubmitting }) => {
+          handleSubmit(values, setSubmitting);
         }}
       >
-        {({ isSubmitting, values }) => (
+        {({ isSubmitting, values, errors, touched }) => (
           <Form>
             <FormObserver handleProvinceCity={handleProvinceCity} />
             <Field type="input" name="name" placeholder="Name" />
-            <Field type="input" name="short_name" placeholder="Short Name" />
+            {errors.name && touched.name ? <div>{errors.name}</div> : null}
+
+            <Field type="input" name="shortName" placeholder="Short Name" />
+            {errors.shortName && touched.shortName ? (
+              <div>{errors.shortName}</div>
+            ) : null}
             <Field type="email" name="email" placeholder="Email" />
-            <ErrorMessage name="email" component="div" />
-            <Field
-              type="input"
-              name="phone_number"
-              placeholder="Phone Number"
-            />
+            {errors.email && touched.email ? <div>{errors.email}</div> : null}
+
+            <Field type="input" name="phoneNumber" placeholder="Phone Number" />
+            {errors.phoneNumber && touched.phoneNumber ? (
+              <div>{errors.phoneNumber}</div>
+            ) : null}
             {/* country drop down */}
-            <Field as="select" name="country_id">
+            <Field as="select" name="countryId">
               <option disabled value="">
                 Please Select a Country
               </option>
@@ -158,11 +150,14 @@ const CreateProject = () => {
                   ))
                 : null}
             </Field>
+            {errors.countryId && touched.countryId ? (
+              <div>{errors.countryId}</div>
+            ) : null}
             {/* Province drop down */}
             <Field
-              disabled={values.country_id === "" ? true : false}
+              disabled={values.countryId === "" ? true : false}
               as="select"
-              name="province_id"
+              name="provinceId"
             >
               <option disabled value="">
                 Select A Province
@@ -177,11 +172,14 @@ const CreateProject = () => {
                 <option disabled>Loading Provinces</option>
               )}
             </Field>
+            {errors.provinceId && touched.provinceId ? (
+              <div>{errors.provinceId}</div>
+            ) : null}
             {/* City drop down */}
             <Field
-              disabled={values.country_id === "" ? true : false}
+              disabled={values.countryId === "" ? true : false}
               as="select"
-              name="city_id"
+              name="cityId"
             >
               <option disabled value="">
                 Select A City
@@ -196,9 +194,47 @@ const CreateProject = () => {
                 <option disabled>Loading Cities</option>
               )}
             </Field>
-
+            {errors.cityId && touched.cityId ? (
+              <div>{errors.cityId}</div>
+            ) : null}
+            {/* Address */}
             <Field type="input" name="address" placeholder="Address" />
-            <Field type="input" name="external_id" placeholder="External ID" />
+            {errors.address && touched.address ? (
+              <div>{errors.address}</div>
+            ) : null}
+            <Field type="input" name="externalId" placeholder="External ID" />
+
+            <Field
+              type="input"
+              name="overdueCharges"
+              placeholder="Overdue Charges"
+            />
+            <Field type="input" name="gracePeriod" placeholder="Grace Period" />
+
+            <Field type="input" name="transferFee" placeholder="Transfer Fee" />
+
+            <Field
+              type="input"
+              name="cancellationFee"
+              placeholder="Cancellation Fee"
+            />
+
+            <Field
+              type="input"
+              name="incomeTaxRateFiler"
+              placeholder="Income Tax Rate Filter"
+            />
+            {errors.incomeTaxRateFiler && touched.incomeTaxRateFiler ? (
+              <div>{errors.incomeTaxRateFiler}</div>
+            ) : null}
+            <Field
+              type="input"
+              name="incomeTaxRateNonFiler"
+              placeholder="Income Tax Rate Non Filter"
+            />
+            {errors.incomeTaxRateNonFiler && touched.incomeTaxRateNonFiler ? (
+              <div>{errors.incomeTaxRateNonFiler}</div>
+            ) : null}
             <button type="submit" disabled={isSubmitting}>
               Submit
             </button>
