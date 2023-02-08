@@ -30,10 +30,6 @@ const User = () => {
       ) : (
         "Loading.........."
       )}
-
-      <button onClick={() => dispatch(getCurrentUser())}>
-        MAKE AN API CALL
-      </button>
     </div>
   );
 };
