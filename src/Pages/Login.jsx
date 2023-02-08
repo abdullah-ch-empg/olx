@@ -83,6 +83,7 @@ const Login = () => {
         onChange={handleCredentials}
         name="password"
         placeholder="Password"
+        type={"password"}
       />
       <button onClick={handleLogin}> Log In</button>
     </div>

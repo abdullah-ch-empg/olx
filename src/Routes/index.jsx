@@ -9,56 +9,36 @@ import Dashboard from "../Pages/Dashboard";
 import { ViewDetailsProject } from "../Pages/ViewDetailsProject";
 export default function Router() {
   let element = useRoutes([
-    // Protected Routes
-    {
-      element: <Protected />,
-      children: [
-        { path: "/", element: <Home /> },
-
-        {
-          path: "/dashboard",
-          element: <Dashboard />,
-        },
-        {
-          path: "/dashboard/new",
-          element: <CreateProject />,
-        },
-        {
-          path: "/dashboard/view-details/:id", //id is a url parameter
-          element: <ViewDetailsProject />,
-        },
-      ],
-    },
-    // Public Routes
-    {
-      path: "/signin",
-      element: <Login />,
-    },
-    {
-      path: "/public",
-      element: <Public />,
-    },
-    {
-      path: "*",
-      element: <Error />,
-    },
+    ...[
+      // Protected Routes
+      {
+        element: <Protected />,
+        children: PROTECTED_ROUTES,
+      },
+    ],
+    ...PUBLIC_ROUTES,
   ]);
   return element;
 }
 
-export const PROTECTED_ROUTES = [
+const PROTECTED_ROUTES = [
+  { path: "/", element: <Home /> },
+
   {
-    // make the parent protected
-    path: "/",
-    element: (
-      <Protected>
-        <Home />
-      </Protected>
-    ),
+    path: "/dashboard",
+    element: <Dashboard />,
+  },
+  {
+    path: "/dashboard/new",
+    element: <CreateProject />,
+  },
+  {
+    path: "/dashboard/view-details/:id", //id is a url parameter
+    element: <ViewDetailsProject />,
   },
 ];
 
-export const PUBLIC_ROUTES = [
+const PUBLIC_ROUTES = [
   {
     path: "/signin",
     element: <Login />,

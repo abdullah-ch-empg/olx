@@ -93,7 +93,7 @@ const Project = () => {
     <div>
       {/* Project */}
       <h1>
-        <button onClick={handleClick}>CTA</button>
+        <button onClick={handleClick}>Add A New Project</button>
       </h1>
       {listing?.projects ? (
         <>
