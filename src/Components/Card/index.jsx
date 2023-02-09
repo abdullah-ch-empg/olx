@@ -1,5 +1,14 @@
 import React from "react";
 
-export const index = ({ heading, value }) => {
-  return <div>index</div>;
+export const Card = ({ heading, value }) => {
+  return (
+    <>
+      {value !== null ? (
+        <>
+          <span>{heading}</span>
+          <span>{value}</span>
+        </>
+      ) : null}
+    </>
+  );
 };

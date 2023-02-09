@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchProjectById } from "../API/project";
+import { Card } from "../Components/Card";
 
 export const ViewDetailsProject = () => {
   const apiCallRef = useRef(false);
+  const [projectDetails, setProjectDetails] = useState(null);
 
   const { id } = useParams();
   console.log("Project ID ===> ", id);
@@ -15,6 +17,7 @@ export const ViewDetailsProject = () => {
           data: { project },
         } = await fetchProjectById(id);
         console.log("Data ===> fetchProjectById ", project);
+        setProjectDetails(project);
       } catch (error) {
         console.log("error ===> fetchProjectById ===> ", error);
       }
@@ -24,5 +27,51 @@ export const ViewDetailsProject = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return <div>ViewDetailsProject</div>;
+  return (
+    <div>
+      {projectDetails ? (
+        <>
+          <button>EDIT</button>
+          {/* Project Details */}
+          <section>
+            <Card value={projectDetails.name + " Project"} />
+
+            {projectDetails.is_active ? <b>ACTIVE</b> : <b>INACTIVE</b>}
+            <Card
+              heading={"Total Amount"}
+              value={projectDetails.total_amount}
+            />
+            <Card
+              heading={"Billed Amount"}
+              value={projectDetails.billed_amount}
+            />
+            <Card
+              heading={"Recieved Amount"}
+              value={projectDetails.received_amount}
+            />
+            <Card heading={"Due Amount"} value={projectDetails.due_amount} />
+            <Card
+              heading={"Overdue Amount"}
+              value={projectDetails.overdue_amount}
+            />
+          </section>
+          {/* Unit Information Section */}
+          <section>
+            <h1>Unit Information</h1>
+            <Card heading={"Total Units"} value={projectDetails.total_units} />
+            <Card
+              heading={"Units Booked"}
+              value={projectDetails.units_booked}
+            />
+            <Card
+              heading={"Units Available"}
+              value={projectDetails.units_available}
+            />
+          </section>
+        </>
+      ) : (
+        <h1>Loading.........</h1>
+      )}
+    </div>
+  );
 };

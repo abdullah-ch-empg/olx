@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-export const alphanumeric = /^[a-z0-9]+$/i;
+export const alphanumeric = /^[a-z\d\-_\s]+$/i;
 export const alphabets = /^[aA-zZ\s]+$/;
 export const phoneNumber =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;

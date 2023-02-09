@@ -110,6 +110,13 @@ const CreateProject = () => {
     }
   }, []);
 
+  const handleChange = (setFieldValue, e) => {
+    console.log(setFieldValue, e);
+    console.log("Name ====> ", e.target.name);
+    console.log("Value ====> ", e.target.value);
+    // setFieldValue(e.target.name, e.target.value);
+  };
+
   return (
     <div>
       CreateProject
@@ -120,7 +127,7 @@ const CreateProject = () => {
           handleSubmit(values, setSubmitting);
         }}
       >
-        {({ isSubmitting, values, errors, touched }) => (
+        {({ isSubmitting, values, errors, touched, setFieldValue }) => (
           <Form>
             <FormObserver handleProvinceCity={handleProvinceCity} />
             {/* Name */}
@@ -142,7 +149,11 @@ const CreateProject = () => {
               <div>{errors.phoneNumber}</div>
             ) : null}
             {/* country drop down */}
-            <Field as="select" name="countryId">
+            <Field
+              // onChange={(e) => handleChange(setFieldValue, e)}
+              as="select"
+              name="countryId"
+            >
               <option disabled value="">
                 Please Select a Country
               </option>
