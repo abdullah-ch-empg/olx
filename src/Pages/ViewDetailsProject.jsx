@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchProjectById } from "../API/project";
 import { Card } from "../Components/Card";
 
@@ -8,6 +8,7 @@ export const ViewDetailsProject = () => {
   const [projectDetails, setProjectDetails] = useState(null);
 
   const { id } = useParams();
+  const navigate = useNavigate();
   console.log("Project ID ===> ", id);
   useEffect(() => {
     const getProject = async () => {
@@ -27,11 +28,19 @@ export const ViewDetailsProject = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const routeToEditProject = () => {
+    navigate("/project/edit", {
+      state: {
+        projectDetails,
+      },
+    });
+  };
   return (
     <div>
       {projectDetails ? (
         <>
-          <button>EDIT</button>
+          <button onClick={routeToEditProject}>EDIT</button>
           {/* Project Details */}
           <section>
             <Card value={projectDetails.name + " Project"} />

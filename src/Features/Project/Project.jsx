@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProjects, selectProjects } from "./projectSlice";
+import { getAllProjects, resetProjects, selectProjects } from "./projectSlice";
 
 /**
  * Project Columns:
@@ -31,6 +31,7 @@ const Project = () => {
     if (!apiCallRef.current) {
       getProjects();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -42,7 +43,7 @@ const Project = () => {
       },
       {
         name: "status",
-        selector: (row) => row.state,
+        selector: (row) => row.state?.name,
       },
       {
         name: "City",
@@ -86,6 +87,7 @@ const Project = () => {
 
   const handleViewDetails = (row) => {
     // console.log("row ===> handleViewDetails ===> ", row);
+    dispatch(resetProjects());
     navigate(`/dashboard/view-details/${row.id}`);
   };
 

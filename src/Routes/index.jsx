@@ -7,6 +7,7 @@ import { Public } from "../Pages/Public";
 import Protected from "../utils/ProtectedRoute";
 import Dashboard from "../Pages/Dashboard";
 import { ViewDetailsProject } from "../Pages/ViewDetailsProject";
+import EditProject from "../Pages/EditProject";
 export default function Router() {
   let element = useRoutes([
     ...[
@@ -31,6 +32,10 @@ const PROTECTED_ROUTES = [
   {
     path: "/dashboard/new",
     element: <CreateProject />,
+  },
+  {
+    path: "/project/edit",
+    element: <EditProject />,
   },
   {
     path: "/dashboard/view-details/:id", //id is a url parameter

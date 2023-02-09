@@ -4,7 +4,7 @@ import { createProject, fetchProjects } from "../../API/project";
 export const projectSlice = createSlice({
   name: "project",
   initialState: {
-    value: [],
+    value: null,
   },
   reducers: {
     pushToProjects: (state, action) => {
@@ -13,10 +13,14 @@ export const projectSlice = createSlice({
     setProjects: (state, action) => {
       state.value = action.payload;
     },
+    resetProjects: (state, action) => {
+      state.value = null;
+    },
   },
 });
 
-export const { pushToProjects, setProjects } = projectSlice.actions;
+export const { pushToProjects, setProjects, resetProjects } =
+  projectSlice.actions;
 
 export const createNewProject = (projectData) => async (dispatch) => {
   try {
