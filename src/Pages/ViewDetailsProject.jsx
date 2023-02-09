@@ -1,15 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchProjectById } from "../API/project";
+import { editProjectById, fetchProjectById } from "../API/project";
 import { Card } from "../Components/Card";
+import Modal from "react-modal";
 
 export const ViewDetailsProject = () => {
   const apiCallRef = useRef(false);
+  const [status, setStatus] = useState("");
   const [projectDetails, setProjectDetails] = useState(null);
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
-  console.log("Project ID ===> ", id);
   useEffect(() => {
     const getProject = async () => {
       try {
@@ -24,11 +26,19 @@ export const ViewDetailsProject = () => {
       }
     };
     if (!apiCallRef.current) {
+      Modal.setAppElement("body");
       getProject();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
   const routeToEditProject = () => {
     navigate("/project/edit", {
       state: {
@@ -36,13 +46,63 @@ export const ViewDetailsProject = () => {
       },
     });
   };
+
+  const handleActiveStatus = async () => {
+    try {
+      await editProjectById(
+        {
+          ...projectDetails,
+          is_active: status,
+        },
+        id
+      );
+      setProjectDetails((prevState) => ({ ...prevState, is_active: status }));
+
+      closeModal();
+    } catch (error) {
+      console.log("handleActiveStatus ===> ", error);
+    }
+
+    // make the API call
+  };
+  const handleChange = (e) => {
+    console.log(
+      "HANDLE SELECT ===> Name ===> Value ",
+      e.target.name,
+      e.target.value
+    );
+    setStatus(e.target.value);
+    openModal();
+  };
   return (
     <div>
       {projectDetails ? (
         <>
           <button onClick={routeToEditProject}>EDIT</button>
+          {/* change status */}
           {/* Project Details */}
+          <select onChange={handleChange} value={status} name="status">
+            <option disabled value={""}>
+              Please Select a status
+            </option>
+
+            <option value={true}>Active</option>
+            <option value={false}>In-Active</option>
+          </select>
           <section>
+            <Modal
+              isOpen={modalIsOpen}
+              // onAfterOpen={afterOpenModal}
+              onRequestClose={closeModal}
+              // style={customStyles}
+              contentLabel="STATUS"
+            >
+              <div>I am a modal</div>
+              <div>
+                <button onClick={handleActiveStatus}>Confirm</button>
+                <button onClick={closeModal}>Cancel</button>
+              </div>
+            </Modal>
             <Card value={projectDetails.name + " Project"} />
 
             {projectDetails.is_active ? <b>ACTIVE</b> : <b>INACTIVE</b>}
