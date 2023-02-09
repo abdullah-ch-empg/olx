@@ -1,15 +1,9 @@
 import React from "react";
-import { createNewProjectInitialValues } from "../utils/formValues";
 
 import { CreateEditForm } from "../Components/Form";
 
 const CreateProject = () => {
-  return (
-    <CreateEditForm
-      isEditProject={false}
-      inputDataFields={createNewProjectInitialValues}
-    />
-  );
+  return <CreateEditForm isEditProject={false} />;
 };
 
 export default CreateProject;

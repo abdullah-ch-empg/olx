@@ -38,6 +38,7 @@ export const ViewDetailsProject = () => {
 
   function closeModal() {
     setIsOpen(false);
+    setStatus("");
   }
   const routeToEditProject = () => {
     navigate("/project/edit", {
@@ -86,8 +87,12 @@ export const ViewDetailsProject = () => {
               Please Select a status
             </option>
 
-            <option value={true}>Active</option>
-            <option value={false}>In-Active</option>
+            <option disabled={projectDetails.is_active} value={true}>
+              Active
+            </option>
+            <option disabled={!projectDetails.is_active} value={false}>
+              In-Active
+            </option>
           </select>
           <section>
             <Modal
