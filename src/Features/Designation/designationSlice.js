@@ -1,5 +1,6 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import { getUser } from "../../API/user";
+import { PURGE } from "redux-persist";
 
 export const designationSlice = createSlice({
   name: "designation",
@@ -24,6 +25,11 @@ export const designationSlice = createSlice({
         state.value.splice(index, 1);
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, (state) => {
+      state.value = null;
+    });
   },
 });
 

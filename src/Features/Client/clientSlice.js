@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchClients } from "../../API/client";
+import { PURGE } from "redux-persist";
 
 export const clientSlice = createSlice({
   name: "client",
@@ -26,6 +27,9 @@ export const clientSlice = createSlice({
       })
       .addCase(getClients.pending, (state, action) => {
         state.loading = false;
+      })
+      .addCase(PURGE, (state) => {
+        state.value = null;
       });
   },
 });

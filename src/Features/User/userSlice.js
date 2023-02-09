@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getUser, signOutUser } from "../../API/user";
 import { removeCookies } from "../../utils";
+import { PURGE } from "redux-persist";
 
 export const userSlice = createSlice({
   name: "user",
@@ -11,6 +12,11 @@ export const userSlice = createSlice({
     setUser: (state, action) => {
       state.value = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, (state) => {
+      state.value = null;
+    });
   },
 });
 

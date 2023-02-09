@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createProject, fetchProjects } from "../../API/project";
+import { PURGE } from "redux-persist";
 
 export const projectSlice = createSlice({
   name: "project",
@@ -16,6 +17,12 @@ export const projectSlice = createSlice({
     resetProjects: (state, action) => {
       state.value = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, (state) => {
+      console.log("PURGE STATE +++++++++++++++");
+      state.value = null;
+    });
   },
 });
 
