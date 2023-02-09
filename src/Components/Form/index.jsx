@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Formik, Form, Field, useFormikContext } from "formik";
 import {
   createProject,
-  editProject,
+  editProjectById,
   fetchCities,
   fetchNewProject,
   fetchProvinces,
@@ -11,8 +11,14 @@ import { useNavigate } from "react-router-dom";
 import { createNewProjectSchema } from "../../utils/validation";
 import { createNewProjectInitialValues } from "../../utils/formValues";
 
-const FormObserver = ({ handleProvinceCity }) => {
-  const { values } = useFormikContext();
+const FormObserver = ({
+  isEditProject,
+  handleProvinceCity,
+  editableInputFields,
+}) => {
+  const apiCallRef = useRef(false);
+
+  const { values, setFieldValue } = useFormikContext();
 
   useEffect(() => {
     // if country is changed,
@@ -24,8 +30,24 @@ const FormObserver = ({ handleProvinceCity }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.countryId.id]);
 
+  useEffect(() => {
+    const getDataToEdit = async () => {
+      apiCallRef.current = true;
+
+      console.log("editableInputFields=========>", editableInputFields);
+      // prepare to update the form input fields
+      for (const key in editableInputFields) {
+        // console.log("keys ======> value", key, editableInputFields[key]);
+        setFieldValue(key, editableInputFields[key], false);
+      }
+    };
+    if (isEditProject && !apiCallRef.current) {
+      getDataToEdit();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleCountryChange = async (countryId) => {
-    console.log("country ====> ", countryId);
     const provincesAPI = async () => await fetchProvinces(countryId);
     const citiesAPI = async () => await fetchCities(countryId);
 
@@ -52,16 +74,16 @@ const FormObserver = ({ handleProvinceCity }) => {
 
 export const CreateEditForm = ({
   isEditProject,
-  inputDataFields,
+  editableInputFields,
   projectId,
+  countriesEditData,
 }) => {
-  const [countries, SetCountries] = useState(null);
+  const [countries, setCountries] = useState(null);
   const [provinceCity, setProvinceCity] = useState({
     cities: null,
     provinces: null,
   });
   const apiCallRef = useRef(false);
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleProvinceCity = (data, key) => {
@@ -91,17 +113,17 @@ export const CreateEditForm = ({
         income_tax_rate_filer: values.incomeTaxRateFiler,
         income_tax_rate_non_filer: values.incomeTaxRateNonFiler,
       };
-      let submissionSuccess = null;
       if (isEditProject) {
-        submissionSuccess = await editProject(projectData, projectId);
+        await editProjectById(projectData, projectId);
+        setSubmitting(false);
+        navigate(`/dashboard/view-details/${projectId}`);
       } else {
-        submissionSuccess = await createProject(projectData);
+        await createProject(projectData);
+        setSubmitting(false);
+        navigate("/dashboard");
       }
       // const submissionSuccess = await dispatch(createNewProject(values));
-      console.log("SUBMISSION SUCCESSFUL ===> ", submissionSuccess);
-
-      setSubmitting(false);
-      navigate("/dashboard");
+      //   console.log("SUBMISSION SUCCESSFUL ===> ", submissionSuccess);
     } catch (error) {
       console.log("error ===> ", error);
       alert(error?.response?.data?.errors[0]);
@@ -113,20 +135,15 @@ export const CreateEditForm = ({
     const getNewProject = async () => {
       apiCallRef.current = true;
       const response = await fetchNewProject();
-      SetCountries(response.data.countries);
+      setCountries(response.data.countries);
     };
-    if (!apiCallRef.current) {
+    if (!apiCallRef.current && !isEditProject) {
       getNewProject();
+    } else if (!apiCallRef.current && isEditProject) {
+      setCountries(countriesEditData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  //   const handleChange = (setFieldValue, e) => {
-  //     console.log(setFieldValue, e);
-  //     console.log("Name ====> ", e.target.name);
-  //     console.log("Value ====> ", e.target.value);
-  //     // setFieldValue(e.target.name, e.target.value);
-  //   };
 
   return (
     <div>
@@ -143,22 +160,13 @@ export const CreateEditForm = ({
         }}
       >
         {({ isSubmitting, values, errors, touched, setFieldValue }) => {
-          // eslint-disable-next-line react-hooks/rules-of-hooks
-          useEffect(() => {
-            // set all values here
-            if (isEditProject) {
-              for (const key in inputDataFields) {
-                if (typeof inputDataFields[key] === "object") {
-                  console.log("keys ======> value", key, inputDataFields[key]);
-                  setFieldValue(key, inputDataFields[key]);
-                } else setFieldValue(key, inputDataFields[key]);
-              }
-            }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-          }, []);
           return (
             <Form>
-              <FormObserver handleProvinceCity={handleProvinceCity} />
+              <FormObserver
+                isEditProject={isEditProject}
+                handleProvinceCity={handleProvinceCity}
+                editableInputFields={editableInputFields}
+              />
               {/* Name */}
               <Field type="input" name="name" placeholder="Name" />
               {errors.name && touched.name ? <div>{errors.name}</div> : null}

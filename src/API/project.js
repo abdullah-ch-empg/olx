@@ -13,11 +13,13 @@ export const createProject = (projectData) =>
     project: projectData,
   });
 
-export const editProject = (projectData, projectId) =>
-  axios.put(`/api/polaris/projects/${projectId}/edit`, {
+export const fetchProjectDataForEdit = (projectId) =>
+  axios.get(`/api/polaris/projects/${projectId}/edit`);
+
+export const editProjectById = (projectData, projectId) =>
+  axios.put(`/api/polaris/projects/${projectId}`, {
     project: projectData,
   });
-
 export const fetchProjects = () => axios.get("api/polaris/projects");
 export const fetchProjectById = (projectId) =>
   axios.get(`api/polaris/projects/${projectId}`);
