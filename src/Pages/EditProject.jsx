@@ -42,9 +42,7 @@ const EditProject = () => {
           // );
           setProjectDetails((prevState) => ({
             ...prevState,
-            [enumsMap[key]]: location.state.projectDetails[key]
-              ? location.state.projectDetails[key]
-              : "",
+            [enumsMap[key]]: project[key] ? project[key] : "",
           }));
         }
       }

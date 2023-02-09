@@ -32,7 +32,6 @@ export const ViewDetailsProject = () => {
   const routeToEditProject = () => {
     navigate("/project/edit", {
       state: {
-        projectDetails,
         projectId: id,
       },
     });
