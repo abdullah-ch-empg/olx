@@ -42,7 +42,7 @@ const Project = () => {
         selector: (row) => row.name,
       },
       {
-        name: "status",
+        name: "state",
         selector: (row) => row.state?.name,
       },
       {
@@ -97,7 +97,7 @@ const Project = () => {
       <h1>
         <button onClick={handleClick}>Add A New Project</button>
       </h1>
-      {listing?.projects ? (
+      {listing && listing?.projects ? (
         <>
           <DataTable columns={columns} data={listing.projects} />
         </>

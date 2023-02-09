@@ -2,24 +2,27 @@ import React, { useEffect, useRef, useState } from "react";
 import { Formik, Form, Field, useFormikContext } from "formik";
 import {
   createProject,
+  editProject,
   fetchCities,
   fetchNewProject,
   fetchProvinces,
 } from "../../API/project";
 import { useNavigate } from "react-router-dom";
 import { createNewProjectSchema } from "../../utils/validation";
+import { createNewProjectInitialValues } from "../../utils/formValues";
 
 const FormObserver = ({ handleProvinceCity }) => {
   const { values } = useFormikContext();
 
   useEffect(() => {
     // if country is changed,
-    if (values.countryId !== "") {
+    console.log("formObserver country id ===> ", values.countryId);
+    if (values.countryId.id !== "") {
       console.log(values);
-      handleCountryChange(values.countryId);
+      handleCountryChange(values.countryId?.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.countryId]);
+  }, [values.countryId.id]);
 
   const handleCountryChange = async (countryId) => {
     console.log("country ====> ", countryId);
@@ -47,8 +50,12 @@ const FormObserver = ({ handleProvinceCity }) => {
   return null;
 };
 
-export const CreateEditForm = ({ isEditProject, inputDataFields }) => {
-  const [countries, SetCountries] = useState();
+export const CreateEditForm = ({
+  isEditProject,
+  inputDataFields,
+  projectId,
+}) => {
+  const [countries, SetCountries] = useState(null);
   const [provinceCity, setProvinceCity] = useState({
     cities: null,
     provinces: null,
@@ -72,9 +79,9 @@ export const CreateEditForm = ({ isEditProject, inputDataFields }) => {
         short_name: values.shortName,
         email: values.email,
         phone_number: values.phoneNumber,
-        country_id: values.countryId,
-        state_id: values.provinceId,
-        city_id: values.cityId,
+        country_id: values.countryId.id,
+        state_id: values.provinceId.id,
+        city_id: values.cityId.id,
         address: values.address,
         external_id: values.externalId,
         overdue_charges: values.overdueCharges,
@@ -84,7 +91,12 @@ export const CreateEditForm = ({ isEditProject, inputDataFields }) => {
         income_tax_rate_filer: values.incomeTaxRateFiler,
         income_tax_rate_non_filer: values.incomeTaxRateNonFiler,
       };
-      const submissionSuccess = await createProject(projectData);
+      let submissionSuccess = null;
+      if (isEditProject) {
+        submissionSuccess = await editProject(projectData, projectId);
+      } else {
+        submissionSuccess = await createProject(projectData);
+      }
       // const submissionSuccess = await dispatch(createNewProject(values));
       console.log("SUBMISSION SUCCESSFUL ===> ", submissionSuccess);
 
@@ -106,6 +118,7 @@ export const CreateEditForm = ({ isEditProject, inputDataFields }) => {
     if (!apiCallRef.current) {
       getNewProject();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //   const handleChange = (setFieldValue, e) => {
@@ -124,144 +137,171 @@ export const CreateEditForm = ({ isEditProject, inputDataFields }) => {
       )}
       <Formik
         validationSchema={createNewProjectSchema}
-        initialValues={inputDataFields}
+        initialValues={createNewProjectInitialValues}
         onSubmit={(values, { setSubmitting }) => {
           handleSubmit(values, setSubmitting);
         }}
       >
-        {({ isSubmitting, values, errors, touched, setFieldValue }) => (
-          <Form>
-            <FormObserver handleProvinceCity={handleProvinceCity} />
-            {/* Name */}
-            <Field type="input" name="name" placeholder="Name" />
-            {errors.name && touched.name ? <div>{errors.name}</div> : null}
+        {({ isSubmitting, values, errors, touched, setFieldValue }) => {
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          useEffect(() => {
+            // set all values here
+            if (isEditProject) {
+              for (const key in inputDataFields) {
+                if (typeof inputDataFields[key] === "object") {
+                  console.log("keys ======> value", key, inputDataFields[key]);
+                  setFieldValue(key, inputDataFields[key]);
+                } else setFieldValue(key, inputDataFields[key]);
+              }
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+          }, []);
+          return (
+            <Form>
+              <FormObserver handleProvinceCity={handleProvinceCity} />
+              {/* Name */}
+              <Field type="input" name="name" placeholder="Name" />
+              {errors.name && touched.name ? <div>{errors.name}</div> : null}
 
-            {/* Short Name */}
-            <Field type="input" name="shortName" placeholder="Short Name" />
-            {errors.shortName && touched.shortName ? (
-              <div>{errors.shortName}</div>
-            ) : null}
-            {/* Email */}
-            <Field type="email" name="email" placeholder="Email" />
-            {errors.email && touched.email ? <div>{errors.email}</div> : null}
+              {/* Short Name */}
+              <Field type="input" name="shortName" placeholder="Short Name" />
+              {errors.shortName && touched.shortName ? (
+                <div>{errors.shortName}</div>
+              ) : null}
+              {/* Email */}
+              <Field type="email" name="email" placeholder="Email" />
+              {errors.email && touched.email ? <div>{errors.email}</div> : null}
 
-            {/* Phone Number */}
-            <Field type="input" name="phoneNumber" placeholder="Phone Number" />
-            {errors.phoneNumber && touched.phoneNumber ? (
-              <div>{errors.phoneNumber}</div>
-            ) : null}
-            {/* country drop down */}
-            <Field
-              // onChange={(e) => handleChange(setFieldValue, e)}
-              as="select"
-              name="countryId"
-            >
-              <option disabled value="">
-                Please Select a Country
-              </option>
-              {countries
-                ? countries.map((country) => (
-                    <option key={country.id} value={country.id}>
-                      {country.name}
+              {/* Phone Number */}
+              <Field
+                type="input"
+                name="phoneNumber"
+                placeholder="Phone Number"
+              />
+              {errors.phoneNumber && touched.phoneNumber ? (
+                <div>{errors.phoneNumber}</div>
+              ) : null}
+              {/* country drop down */}
+              <Field
+                // onChange={(e) => handleChange(setFieldValue, e)}
+                as="select"
+                name="countryId.id"
+              >
+                <option disabled value="">
+                  Please Select a Country
+                </option>
+                {countries
+                  ? countries.map((country) => (
+                      <option key={country.id} value={country.id}>
+                        {country.name}
+                      </option>
+                    ))
+                  : null}
+              </Field>
+              {errors.countryId?.id && touched.countryId?.id ? (
+                <div>{errors.countryId.id}</div>
+              ) : null}
+              {/* Province drop down */}
+              <Field
+                disabled={values.countryId.id === "" ? true : false}
+                as="select"
+                name="provinceId.id"
+              >
+                <option disabled value="">
+                  Select A Province
+                </option>
+                {provinceCity.provinces ? (
+                  provinceCity.provinces.map((province) => (
+                    <option key={province.id} value={province.id}>
+                      {province.name}
                     </option>
                   ))
-                : null}
-            </Field>
-            {errors.countryId && touched.countryId ? (
-              <div>{errors.countryId}</div>
-            ) : null}
-            {/* Province drop down */}
-            <Field
-              disabled={values.countryId === "" ? true : false}
-              as="select"
-              name="provinceId"
-            >
-              <option disabled value="">
-                Select A Province
-              </option>
-              {provinceCity.provinces ? (
-                provinceCity.provinces.map((province) => (
-                  <option key={province.id} value={province.id}>
-                    {province.name}
-                  </option>
-                ))
-              ) : (
-                <option disabled>Loading Provinces</option>
-              )}
-            </Field>
-            {errors.provinceId && touched.provinceId ? (
-              <div>{errors.provinceId}</div>
-            ) : null}
-            {/* City drop down */}
-            <Field
-              disabled={values.countryId === "" ? true : false}
-              as="select"
-              name="cityId"
-            >
-              <option disabled value="">
-                Select A City
-              </option>
-              {provinceCity.cities ? (
-                provinceCity.cities.map((city) => (
-                  <option key={city.id} value={city.id}>
-                    {city.name}
-                  </option>
-                ))
-              ) : (
-                <option disabled>Loading Cities</option>
-              )}
-            </Field>
-            {errors.cityId && touched.cityId ? (
-              <div>{errors.cityId}</div>
-            ) : null}
-            {/* Address */}
-            <Field type="input" name="address" placeholder="Address" />
-            {errors.address && touched.address ? (
-              <div>{errors.address}</div>
-            ) : null}
-            <Field type="input" name="externalId" placeholder="External ID" />
+                ) : (
+                  <option disabled>Loading Provinces</option>
+                )}
+              </Field>
+              {errors.provinceId?.id && touched.provinceId?.id ? (
+                <div>{errors.provinceId.id}</div>
+              ) : null}
+              {/* City drop down */}
+              <Field
+                disabled={values.countryId.id === "" ? true : false}
+                as="select"
+                name="cityId.id"
+              >
+                <option disabled value="">
+                  Select A City
+                </option>
+                {provinceCity.cities ? (
+                  provinceCity.cities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading Cities</option>
+                )}
+              </Field>
+              {errors.cityId?.id && touched.cityId?.id ? (
+                <div>{errors.cityId.id}</div>
+              ) : null}
+              {/* Address */}
+              <Field type="input" name="address" placeholder="Address" />
+              {errors.address && touched.address ? (
+                <div>{errors.address}</div>
+              ) : null}
+              <Field type="input" name="externalId" placeholder="External ID" />
 
-            {/* Overdue Charges */}
-            <Field
-              type="input"
-              name="overdueCharges"
-              placeholder="Overdue Charges"
-            />
-            {/* Grace Period */}
-            <Field type="input" name="gracePeriod" placeholder="Grace Period" />
+              {/* Overdue Charges */}
+              <Field
+                type="input"
+                name="overdueCharges"
+                placeholder="Overdue Charges"
+              />
+              {/* Grace Period */}
+              <Field
+                type="input"
+                name="gracePeriod"
+                placeholder="Grace Period"
+              />
 
-            {/*  Transfer Fee */}
-            <Field type="input" name="transferFee" placeholder="Transfer Fee" />
+              {/*  Transfer Fee */}
+              <Field
+                type="input"
+                name="transferFee"
+                placeholder="Transfer Fee"
+              />
 
-            {/* Cancellation Fee */}
-            <Field
-              type="input"
-              name="cancellationFee"
-              placeholder="Cancellation Fee"
-            />
-            {/* Income Tax Rate Filter */}
-            <Field
-              type="input"
-              name="incomeTaxRateFiler"
-              placeholder="Income Tax Rate Filter"
-            />
-            {errors.incomeTaxRateFiler && touched.incomeTaxRateFiler ? (
-              <div>{errors.incomeTaxRateFiler}</div>
-            ) : null}
-            {/*Income Tax Rate Non Filter  */}
-            <Field
-              type="input"
-              name="incomeTaxRateNonFiler"
-              placeholder="Income Tax Rate Non Filter"
-            />
-            {errors.incomeTaxRateNonFiler && touched.incomeTaxRateNonFiler ? (
-              <div>{errors.incomeTaxRateNonFiler}</div>
-            ) : null}
-            <button type="submit" disabled={isSubmitting}>
-              Submit
-            </button>
-          </Form>
-        )}
+              {/* Cancellation Fee */}
+              <Field
+                type="input"
+                name="cancellationFee"
+                placeholder="Cancellation Fee"
+              />
+              {/* Income Tax Rate Filter */}
+              <Field
+                type="input"
+                name="incomeTaxRateFiler"
+                placeholder="Income Tax Rate Filter"
+              />
+              {errors.incomeTaxRateFiler && touched.incomeTaxRateFiler ? (
+                <div>{errors.incomeTaxRateFiler}</div>
+              ) : null}
+              {/*Income Tax Rate Non Filter  */}
+              <Field
+                type="input"
+                name="incomeTaxRateNonFiler"
+                placeholder="Income Tax Rate Non Filter"
+              />
+              {errors.incomeTaxRateNonFiler && touched.incomeTaxRateNonFiler ? (
+                <div>{errors.incomeTaxRateNonFiler}</div>
+              ) : null}
+              <button type="submit" disabled={isSubmitting}>
+                Submit
+              </button>
+            </Form>
+          );
+        }}
       </Formik>
     </div>
   );

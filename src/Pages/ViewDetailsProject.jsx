@@ -33,6 +33,7 @@ export const ViewDetailsProject = () => {
     navigate("/project/edit", {
       state: {
         projectDetails,
+        projectId: id,
       },
     });
   };

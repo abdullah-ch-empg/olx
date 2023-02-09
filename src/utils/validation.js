@@ -17,9 +17,18 @@ export const createNewProjectSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .matches(phoneNumber, "Invalid Phone Number")
     .required("Required"),
-  countryId: Yup.string().required("Required"),
-  provinceId: Yup.string().required("Required"),
-  cityId: Yup.string().required("Required"),
+  countryId: Yup.object().shape({
+    id: Yup.string().required("Required"),
+    // name: Yup.string().required("Required"),
+  }),
+  provinceId: Yup.object().shape({
+    id: Yup.string().required("Required"),
+    // name: Yup.string().required("Required"),
+  }),
+  cityId: Yup.object().shape({
+    id: Yup.string().required("Required"),
+    // name: Yup.string().required("Required"),
+  }),
   address: Yup.string().required("Address is Required"),
   incomeTaxRateFiler: Yup.number()
     .typeError("Input must be a number")

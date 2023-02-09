@@ -7,9 +7,9 @@ const enumsMap = {
   short_name: "shortName",
   email: "email",
   phone_number: "phoneNumber",
-  country: "country",
-  province_id: "provinceId",
-  city: "city",
+  country: "countryId",
+  state: "provinceId",
+  city: "cityId",
   address: "address",
   external_id: "externalId",
   overdue_charges: "overdueCharges",
@@ -27,11 +27,11 @@ const EditProject = () => {
   const projectData = useMemo(() => {
     for (const key in location.state.projectDetails) {
       if (enumsMap[key]) {
-        console.log(
-          "enumsMap[key] ====> key and value ",
-          enumsMap[key],
-          location.state.projectDetails[key]
-        );
+        // console.log(
+        //   "enumsMap[key] ====> key and value ",
+        //   enumsMap[key],
+        //   location.state.projectDetails[key]
+        // );
         setProjectDetails((prevState) => ({
           ...prevState,
           [enumsMap[key]]: location.state.projectDetails[key]
@@ -43,12 +43,20 @@ const EditProject = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log("PROJECT DETAILS INFO =======> ", projectDetails);
+  console.log(
+    "PROJECT DETAILS INFO =======> ",
+    projectDetails,
+    location.state.projectId
+  );
 
   return (
     <>
       {projectDetails ? (
-        <CreateEditForm isEditProject={true} inputDataFields={projectDetails} />
+        <CreateEditForm
+          isEditProject={true}
+          inputDataFields={projectDetails}
+          projectId={location.state.projectId}
+        />
       ) : (
         "Loading the form.........."
       )}

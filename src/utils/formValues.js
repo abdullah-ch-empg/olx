@@ -3,9 +3,18 @@ export const createNewProjectInitialValues = {
   shortName: "",
   email: "",
   phoneNumber: "",
-  countryId: "",
-  provinceId: "",
-  cityId: "",
+  countryId: {
+    id: "",
+    name: "",
+  },
+  provinceId: {
+    id: "",
+    name: "",
+  },
+  cityId: {
+    id: "",
+    name: "",
+  },
   address: "",
   externalId: "",
   overdueCharges: "",
