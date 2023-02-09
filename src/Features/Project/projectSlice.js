@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { createProject, fetchProjects } from "../../API/project";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { fetchProjects } from "../../API/project";
 import { PURGE } from "redux-persist";
 
 export const projectSlice = createSlice({
@@ -8,9 +8,6 @@ export const projectSlice = createSlice({
     value: null,
   },
   reducers: {
-    pushToProjects: (state, action) => {
-      state.value.push(action.payload);
-    },
     setProjects: (state, action) => {
       state.value = action.payload;
     },
@@ -19,37 +16,51 @@ export const projectSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(PURGE, (state) => {
-      console.log("PURGE STATE +++++++++++++++");
-      state.value = null;
-    });
+    builder
+      .addCase(PURGE, (state) => {
+        console.log("PURGE STATE +++++++++++++++");
+        state.value = null;
+      })
+      .addCase(getAllProjects.pending, (state, action) => {
+        //
+        console.log("PENDING");
+      })
+      .addCase(getAllProjects.fulfilled, (state, action) => {
+        //
+        console.log("FULFILLLED");
+        state.value = action.payload;
+      })
+      .addCase(getAllProjects.rejected, (state, action) => {
+        //
+        console.log("REJECTED", action.error);
+      });
   },
 });
 
-export const { pushToProjects, setProjects, resetProjects } =
-  projectSlice.actions;
+export const { setProjects, resetProjects } = projectSlice.actions;
 
-export const createNewProject = (projectData) => async (dispatch) => {
-  try {
-    const response = await createProject(projectData);
-    console.log("response ====> createNewProject ==> ", response.data.project);
-    // since we'll always make the get listing API call on mount
-    // dispatch(pushToProjects(response.data.project));
-    return true;
-  } catch (error) {
-    console.log("error ===> createNewProject ===> ", error);
-    alert(error.response.data.errors);
+// use async thunk here
+export const getAllProjects = createAsyncThunk(
+  "project/getAllProjects",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetchProjects();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
-};
-export const getAllProjects = () => async (dispatch) => {
-  try {
-    const response = await fetchProjects();
-    console.log("response ====> getAllProjects ==> ", response.data.projects);
-    dispatch(setProjects(response.data));
-  } catch (error) {
-    console.log("error ===> getAllProjects ===> ", error);
-  }
-};
+);
+
+// export const getAllProjects = () => async (dispatch) => {
+//   try {
+//     const response = await fetchProjects();
+//     console.log("response ====> getAllProjects ==> ", response.data.projects);
+//     dispatch(setProjects(response.data));
+//   } catch (error) {
+//     console.log("error ===> getAllProjects ===> ", error);
+//   }
+// };
 
 export const selectProjects = (state) => state.project.value;
 

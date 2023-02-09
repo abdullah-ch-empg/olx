@@ -42,8 +42,8 @@ const Project = () => {
         selector: (row) => row.name,
       },
       {
-        name: "state",
-        selector: (row) => row.state?.name,
+        name: "status",
+        selector: (row) => (row.is_active ? "Active" : "In Active"),
       },
       {
         name: "City",
