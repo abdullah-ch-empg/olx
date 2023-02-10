@@ -19,7 +19,7 @@ const FormObserver = ({
 }) => {
   const apiCallRef = useRef(false);
 
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setValues } = useFormikContext();
 
   // // reset cities when province is changed
   // useEffect(() => {
@@ -44,11 +44,13 @@ const FormObserver = ({
       apiCallRef.current = true;
 
       console.log("editableInputFields=========>", editableInputFields);
+
       // prepare to update the form input fields
-      for (const key in editableInputFields) {
-        // console.log("keys ======> value", key, editableInputFields[key]);
-        setFieldValue(key, editableInputFields[key], false);
-      }
+      setValues(editableInputFields, true);
+      // for (const key in editableInputFields) {
+      //   // console.log("keys ======> value", key, editableInputFields[key]);
+      //   setFieldValue(key, editableInputFields[key], false);
+      // }
     };
     if (isEditProject && !apiCallRef.current) {
       getDataToEdit();
