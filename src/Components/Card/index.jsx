@@ -1,15 +1,15 @@
 import React from "react";
 
 import styles from "./Card.module.css";
-export const Card = ({ heading, value }) => {
+export const Card = ({ heading, value, Icon }) => {
   return (
     <>
       {value !== null ? (
         <div className={styles.container}>
-          <span className={styles.icon}>ICON</span>
+          {Icon ? <span className={styles.icon}>{Icon}</span> : null}
           <div className={styles.vertical}>
-            <span>{heading}</span>
-            <span>{value}</span>
+            <span className={`${styles.fontSM}`}>{heading}</span>
+            <span className={`${styles.fontSM}`}>{value}</span>
           </div>
         </div>
       ) : null}

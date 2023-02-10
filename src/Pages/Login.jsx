@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { signInUser } from "../API/user";
+import { useDispatch } from "react-redux";
+import { setLogIn } from "../Features/User/userSlice";
 const cookies = new Cookies();
 
 const isUserSignedIn = () => {
@@ -13,6 +15,7 @@ const isUserSignedIn = () => {
 };
 
 const Login = () => {
+  const dispatch = useDispatch();
   const isSignedIn = isUserSignedIn();
 
   const navigate = useNavigate();
@@ -36,6 +39,7 @@ const Login = () => {
       );
       console.log("response ===> sigin ==> ", response.headers);
 
+      dispatch(setLogIn(true));
       // set cookies
       cookies.set("access-token", response.headers["access-token"], {
         path: "/",

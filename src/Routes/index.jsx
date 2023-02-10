@@ -6,7 +6,7 @@ import Login from "../Pages/Login";
 import { Public } from "../Pages/Public";
 import Protected from "../utils/ProtectedRoute";
 import Dashboard from "../Pages/Dashboard";
-import { ViewDetailsProject } from "../Pages/ViewDetailsProject";
+import { ViewDetailsProject } from "../Pages/ViewDetails";
 import EditProject from "../Pages/EditProject";
 export default function Router() {
   let element = useRoutes([

@@ -1,0 +1,32 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    margin-left: 20px;
+}
+
+input {
+    width: 190px;
+}
+
+.errorField {
+    border: 2px solid red;
+}
+
+.label {
+    display: flex;
+    justify-content: flex-start;
+    font-size: small;
+    margin-bottom: 2px;
+}
+
+.m10 {
+    margin: 10px 10px 0px 10px;
+}
+button {
+    width: fit-content;
+}
+
+select {
+    width: 200px;
+}

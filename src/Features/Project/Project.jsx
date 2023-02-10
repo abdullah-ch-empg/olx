@@ -2,20 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProjects, resetProjects, selectProjects } from "./projectSlice";
-
-/**
- * Project Columns:
-Project --- maybe name key
-Status --- maybe state key
-City --- done
-Total Units --- done
-Units Booked --- done
-Units Available --- done
-Total Amount --- done
-View Detail (CTA)
-
- */
+import { getAllProjects, selectProjects } from "./projectSlice";
 
 const Project = () => {
   const listing = useSelector(selectProjects);
@@ -87,7 +74,7 @@ const Project = () => {
 
   const handleViewDetails = (row) => {
     // console.log("row ===> handleViewDetails ===> ", row);
-    dispatch(resetProjects());
+    // dispatch(resetProjects());
     navigate(`/dashboard/view-details/${row.id}`);
   };
 
