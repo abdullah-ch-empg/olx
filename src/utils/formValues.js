@@ -3,15 +3,15 @@ export const createNewProjectInitialValues = {
   shortName: "",
   email: "",
   phoneNumber: "",
-  countryId: {
+  country: {
     id: "",
     name: "",
   },
-  provinceId: {
+  province: {
     id: "",
     name: "",
   },
-  cityId: {
+  city: {
     id: "",
     name: "",
   },

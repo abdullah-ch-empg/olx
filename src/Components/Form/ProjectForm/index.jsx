@@ -1,89 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Formik, Form, Field, useFormikContext } from "formik";
+import { Formik, Form, Field } from "formik";
 import {
   createProject,
   editProjectById,
-  fetchCities,
   fetchNewProject,
-  fetchProvinces,
-} from "../../API/project";
+} from "../../../API/project";
 import { useNavigate } from "react-router-dom";
-import { createNewProjectSchema } from "../../utils/validation";
-import { createNewProjectInitialValues } from "../../utils/formValues";
-import styles from "./Form.module.css";
+import { createNewProjectSchema } from "../../../utils/validation";
+import { createNewProjectInitialValues } from "../../../utils/formValues";
+import styles from "./Form.module.scss";
+import FormObserver from "./Observer";
 
-const FormObserver = ({
-  isEditProject,
-  handleProvinceCity,
-  editableInputFields,
-}) => {
-  const apiCallRef = useRef(false);
-
-  const { values, setValues } = useFormikContext();
-
-  // // reset cities when province is changed
-  // useEffect(() => {
-  //   if (values.provinceId.id !== "") {
-  //     // console.log(values);
-  //     setFieldValue("cityId.id", "");
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [values.provinceId.id]);
-  useEffect(() => {
-    // if country is changed,
-    console.log("formObserver country id ===> ", values.countryId);
-    if (values.countryId.id !== "") {
-      console.log(values);
-      handleCountryChange(values.countryId?.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.countryId.id]);
-
-  useEffect(() => {
-    const getDataToEdit = async () => {
-      apiCallRef.current = true;
-
-      console.log("editableInputFields=========>", editableInputFields);
-
-      // prepare to update the form input fields
-      setValues(editableInputFields, true);
-      // for (const key in editableInputFields) {
-      //   // console.log("keys ======> value", key, editableInputFields[key]);
-      //   setFieldValue(key, editableInputFields[key], false);
-      // }
-    };
-    if (isEditProject && !apiCallRef.current) {
-      getDataToEdit();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleCountryChange = async (countryId) => {
-    const responses = await Promise.allSettled([
-      fetchProvinces(countryId),
-      fetchCities(countryId),
-    ]);
-
-    for (const response of responses) {
-      if (response.status === "fulfilled") {
-        console.log("response ===> ", response.value.data);
-        if ("cities" in response.value.data) {
-          console.log("I have cities");
-          handleProvinceCity(response.value.data.cities, "cities");
-        } else if ("states" in response.value.data) {
-          console.log("I have states");
-          handleProvinceCity(response.value.data.states, "provinces");
-        }
-      } else {
-        // handle error here
-        console.log("response ===> ", response.value.data);
-      }
-    }
-  };
-  return null;
-};
-
-export const CreateEditForm = ({
+const CreateEditForm = ({
   isEditProject,
   editableInputFields,
   projectId,
@@ -112,9 +40,9 @@ export const CreateEditForm = ({
         short_name: values.shortName,
         email: values.email,
         phone_number: values.phoneNumber,
-        country_id: values.countryId.id,
-        state_id: values.provinceId.id,
-        city_id: values.cityId.id,
+        country_id: values.country.id,
+        state_id: values.province.id,
+        city_id: values.city.id,
         address: values.address,
         external_id: values.externalId,
         overdue_charges: values.overdueCharges,
@@ -191,7 +119,9 @@ export const CreateEditForm = ({
                   placeholder="Name"
                 />
                 {errors.name && touched.name ? (
-                  <div className={styles.label}>{errors.name}</div>
+                  <div className={`${styles.label} ${styles.errorFont}`}>
+                    {errors.name}
+                  </div>
                 ) : null}
               </div>
               {/* Short Name */}
@@ -209,7 +139,9 @@ export const CreateEditForm = ({
                   placeholder="Short Name"
                 />
                 {errors.shortName && touched.shortName ? (
-                  <div className={styles.label}>{errors.shortName}</div>
+                  <div className={`${styles.label} ${styles.errorFont}`}>
+                    {errors.shortName}
+                  </div>
                 ) : null}
               </div>
               {/* Email */}
@@ -224,7 +156,9 @@ export const CreateEditForm = ({
                   placeholder="Email"
                 />
                 {errors.email && touched.email ? (
-                  <div className={styles.label}>{errors.email}</div>
+                  <div className={`${styles.label} ${styles.errorFont}`}>
+                    {errors.email}
+                  </div>
                 ) : null}
               </div>
               {/* Phone Number */}
@@ -242,7 +176,9 @@ export const CreateEditForm = ({
                   placeholder="Phone Number"
                 />
                 {errors.phoneNumber && touched.phoneNumber ? (
-                  <div className={styles.label}>{errors.phoneNumber}</div>
+                  <div className={`${styles.label} ${styles.errorFont}`}>
+                    {errors.phoneNumber}
+                  </div>
                 ) : null}
               </div>
               {/* country drop down */}
@@ -250,13 +186,13 @@ export const CreateEditForm = ({
                 <label className={styles.label}>Country</label>
                 <Field
                   className={
-                    errors?.countryId?.id && touched?.countryId?.id
+                    errors?.country?.id && touched?.country?.id
                       ? styles.errorField
                       : ""
                   }
                   // onChange={(e) => handleChange(setFieldValue, e)}
                   as="select"
-                  name="countryId.id"
+                  name="country.id"
                 >
                   <option disabled value="">
                     Please Select a Country
@@ -269,8 +205,10 @@ export const CreateEditForm = ({
                       ))
                     : null}
                 </Field>
-                {errors.countryId?.id && touched.countryId?.id ? (
-                  <div className={styles.label}>{errors.countryId.id}</div>
+                {errors.country?.id && touched.country?.id ? (
+                  <div className={`${styles.label} ${styles.errorFont}`}>
+                    {errors.country.id}
+                  </div>
                 ) : null}
               </div>
               {/* Province drop down */}
@@ -279,13 +217,13 @@ export const CreateEditForm = ({
 
                 <Field
                   className={
-                    errors.provinceId?.id && touched.provinceId?.id
+                    errors.province?.id && touched.province?.id
                       ? styles.errorField
                       : ""
                   }
-                  disabled={values.countryId.id === "" ? true : false}
+                  disabled={values.country.id === "" ? true : false}
                   as="select"
-                  name="provinceId.id"
+                  name="province.id"
                 >
                   <option disabled value="">
                     Select A Province
@@ -300,8 +238,10 @@ export const CreateEditForm = ({
                     <option disabled>Loading Provinces</option>
                   )}
                 </Field>
-                {errors.provinceId?.id && touched.provinceId?.id ? (
-                  <div className={styles.label}>{errors.provinceId.id}</div>
+                {errors.province?.id && touched.province?.id ? (
+                  <div className={`${styles.label} ${styles.errorFont}`}>
+                    {errors.province.id}
+                  </div>
                 ) : null}
               </div>
               {/* City drop down */}
@@ -309,13 +249,11 @@ export const CreateEditForm = ({
                 <label className={styles.label}>City</label>
                 <Field
                   className={
-                    errors.cityId?.id && touched.cityId?.id
-                      ? styles.errorField
-                      : ""
+                    errors.city?.id && touched.city?.id ? styles.errorField : ""
                   }
-                  disabled={values.countryId.id === "" ? true : false}
+                  disabled={values.country.id === "" ? true : false}
                   as="select"
-                  name="cityId.id"
+                  name="city.id"
                 >
                   <option disabled value="">
                     Select A City
@@ -330,8 +268,10 @@ export const CreateEditForm = ({
                     <option disabled>Loading Cities</option>
                   )}
                 </Field>
-                {errors.cityId?.id && touched.cityId?.id ? (
-                  <div className={styles.label}>{errors.cityId.id}</div>
+                {errors.city?.id && touched.city?.id ? (
+                  <div className={`${styles.label} ${styles.errorFont}`}>
+                    {errors.city.id}
+                  </div>
                 ) : null}
               </div>
               {/* Address */}
@@ -347,7 +287,9 @@ export const CreateEditForm = ({
                   placeholder="Address"
                 />
                 {errors.address && touched.address ? (
-                  <div className={styles.label}>{errors.address}</div>
+                  <div className={`${styles.label} ${styles.errorFont}`}>
+                    {errors.address}
+                  </div>
                 ) : null}
               </div>
               {/* External Id */}
@@ -416,7 +358,7 @@ export const CreateEditForm = ({
                   placeholder="Income Tax Rate Filter"
                 />
                 {errors.incomeTaxRateFiler && touched.incomeTaxRateFiler ? (
-                  <div className={styles.label}>
+                  <div className={`${styles.label} ${styles.errorFont}`}>
                     {errors.incomeTaxRateFiler}
                   </div>
                 ) : null}
@@ -439,13 +381,13 @@ export const CreateEditForm = ({
                 />
                 {errors.incomeTaxRateNonFiler &&
                 touched.incomeTaxRateNonFiler ? (
-                  <div className={styles.label}>
+                  <div className={`${styles.label} ${styles.errorFont}`}>
                     {errors.incomeTaxRateNonFiler}
                   </div>
                 ) : null}
               </div>
               <button
-                className={`${styles.m10}`}
+                className={`${styles.m10} ${styles.mb10}`}
                 type="submit"
                 disabled={isSubmitting}
               >
@@ -458,3 +400,5 @@ export const CreateEditForm = ({
     </>
   );
 };
+
+export default CreateEditForm;

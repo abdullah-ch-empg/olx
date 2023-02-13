@@ -1,16 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { fetchProjectDataForEdit } from "../API/project";
-import { CreateEditForm } from "../Components/Form";
+import CreateEditForm from "../Components/Form/ProjectForm";
 
 const enumsMap = {
   name: "name",
   short_name: "shortName",
   email: "email",
   phone_number: "phoneNumber",
-  country: "countryId",
-  state: "provinceId",
-  city: "cityId",
+  country: "country",
+  state: "province",
+  city: "city",
   address: "address",
   external_id: "externalId",
   overdue_charges: "overdueCharges",
@@ -63,6 +63,7 @@ const EditProject = () => {
 
   return (
     <>
+      CreateEditForm
       {projectDetails && countries ? (
         <CreateEditForm
           isEditProject={true}

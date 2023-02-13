@@ -19,8 +19,7 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(PURGE, (state) => {
-      state.value = null;
-      state.isLoggedIn = null;
+      state = null;
     });
   },
 });

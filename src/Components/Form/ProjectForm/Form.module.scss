@@ -1,18 +1,24 @@
+@import "../../../Styles/variables";
 .container {
     display: flex;
     flex-direction: column;
-    width: fit-content;
+    justify-content: center;
+    align-items: center;
     margin-left: 20px;
 }
 
 input {
     width: 190px;
+    padding: 3px;
 }
 
 .errorField {
-    border: 2px solid red;
+    border: 2px solid $error;
 }
 
+.errorFont {
+    color: $error;
+}
 .label {
     display: flex;
     justify-content: flex-start;
@@ -29,4 +35,9 @@ button {
 
 select {
     width: 200px;
+    padding: 3px;
+}
+
+.mb10 {
+    margin-bottom: 10px;
 }

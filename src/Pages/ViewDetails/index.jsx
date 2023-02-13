@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { editProjectById, fetchProjectById } from "../../API/project";
 import { Card } from "../../Components/Card";
 import Modal from "react-modal";
-import styles from "./ViewDetails.module.css";
+import styles from "./ViewDetails.module.scss";
 import { HiCheck } from "react-icons/hi";
 
 export const ViewDetailsProject = () => {

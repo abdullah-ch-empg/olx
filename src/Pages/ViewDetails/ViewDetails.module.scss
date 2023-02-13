@@ -1,7 +1,10 @@
+@import "../../Styles/mixins";
+
 .container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    // display: flex;
+    // justify-content: space-around;
+    // align-items: center;
+    @include space-around;
     
 }
 
