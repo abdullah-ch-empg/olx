@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { signInUser } from "../API/user";
+import { signInUser } from "../../API/user";
 import { useDispatch } from "react-redux";
-import { setLogIn } from "../Features/User/userSlice";
+import { selectUserLoginState, setLogIn } from "../../Features/User/userSlice";
+import styles from "./Login.module.scss";
+
 const cookies = new Cookies();
-
-const isUserSignedIn = () => {
-  let uid = cookies.get("uid");
-  let accessToken = cookies.get("access-token");
-  let client = cookies.get("client");
-
-  return uid && accessToken && client ? true : false;
-};
-
 const Login = () => {
   const dispatch = useDispatch();
-  const isSignedIn = isUserSignedIn();
+  const isSignedIn = useSelector(selectUserLoginState);
 
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
@@ -81,16 +75,25 @@ const Login = () => {
     login();
   };
   return (
-    <div>
-      <input onChange={handleCredentials} name="email" placeholder="email" />
-      <input
-        onChange={handleCredentials}
-        name="password"
-        placeholder="Password"
-        type={"password"}
-      />
-      <button onClick={handleLogin}> Log In</button>
-    </div>
+    <>
+      <h1>Log In</h1>
+      <div className={`${styles.vertical}`}>
+        <input
+          className={`${styles.mb10}`}
+          onChange={handleCredentials}
+          name="email"
+          placeholder="email"
+        />
+        <input
+          className={`${styles.mb10}`}
+          onChange={handleCredentials}
+          name="password"
+          placeholder="Password"
+          type={"password"}
+        />
+        <button onClick={handleLogin}> Log In</button>
+      </div>
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import Project from "../Features/Project/Project.jsx";
+import Project from "../../Features/Project/Project.jsx";
 
 const Dashboard = () => {
   return (

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { fetchProjectDataForEdit } from "../API/project";
-import CreateEditForm from "../Components/Form/ProjectForm";
+import { fetchProjectDataForEdit } from "../../API/project";
+import CreateEditForm from "../../Components/Form/ProjectForm";
 
 const enumsMap = {
   name: "name",

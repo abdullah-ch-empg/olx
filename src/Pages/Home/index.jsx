@@ -3,7 +3,7 @@
 // import { useDispatch } from "react-redux";
 // import { persistor } from "../App/store";
 
-import User from "../Features/User/User";
+import User from "../../Features/User/User";
 // import { logOutUser } from "../Features/User/userSlice";
 // import { Designation } from "../Features/Designation/Designation";
 // import { Client } from "../Features/Client/Client";

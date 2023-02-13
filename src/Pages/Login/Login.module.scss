@@ -1,0 +1,14 @@
+@import "../../Styles/mixins";
+.vertical {
+    @include justify-center-vertical;
+}
+
+input {
+    padding: 3px;
+
+}
+
+.mb10 {
+    margin-bottom: 10px;
+
+}

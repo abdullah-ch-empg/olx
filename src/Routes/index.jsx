@@ -2,12 +2,12 @@ import { useRoutes } from "react-router-dom";
 import { Error } from "../Pages/Error";
 import CreateProject from "../Pages/CreateProject";
 import Home from "../Pages/Home";
-import Login from "../Pages/Login";
 import { Public } from "../Pages/Public";
 import Protected from "../utils/ProtectedRoute";
 import Dashboard from "../Pages/Dashboard";
 import { ViewDetailsProject } from "../Pages/ViewDetails";
 import EditProject from "../Pages/EditProject";
+import Login from "../Pages/Login/index.jsx";
 export default function Router() {
   let element = useRoutes([
     ...[
