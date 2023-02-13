@@ -5,6 +5,7 @@ import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
 import { persistor, store } from "./App/store";
 import { Provider } from "react-redux";
+// delays the rendering of your app's UI until your persisted state has been retrieved and saved to redux.
 import { PersistGate } from "redux-persist/integration/react";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

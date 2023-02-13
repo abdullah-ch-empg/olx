@@ -42,24 +42,6 @@ const FormObserver = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cityReset]);
 
-  // // reset cities when province is changed
-  //   useEffect(() => {
-  //     console.log(
-  //       "*****************allowCitySelectionRef ===> ",
-  //       allowCitySelectionRef.current
-  //     );
-  //     // if (allowCitySelectionRef.current && values.province.id !== "") {
-  //     //   setFieldValue("city.id", "", false);
-  //     // } else if (!allowCitySelectionRef.current) {
-  //     //   console.log("IN EDIT MODE, city should not be null for first render");
-  //     //   allowCitySelectionRef.current = true;
-  //     // }
-  //     // return () => {
-  //     //   allowCitySelectionRef.current = false;
-  //     // };
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [values.province.id]);
-
   useEffect(() => {
     // if country is changed,
     console.log("formObserver country id ===> ", values.country);
